@@ -29,6 +29,7 @@
 
 @property (readonly) NSArray *pagerTabStripChildViewControllersForScrolling;
 @property (nonatomic) NSUInteger currentIndex;
+@property (nonatomic) NSUInteger preCurrentIndex;
 
 @end
 
@@ -102,7 +103,8 @@
     
     if (self.dataSource){
         _pagerTabStripChildViewControllers = [self.dataSource childViewControllersForPagerTabStripViewController:self];
-    }
+    }    
+
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -115,6 +117,13 @@
     [super viewDidAppear:animated];
     _lastSize = self.containerView.bounds.size;
     [self updateIfNeeded];
+    BOOL needUpdateCurrentChild = _preCurrentIndex != _currentIndex;
+    if (needUpdateCurrentChild) {
+        [self moveToViewControllerAtIndex:_preCurrentIndex];
+    }
+    for (UIViewController *children in _pagerTabStripChildViewControllers) {
+        [children endAppearanceTransition];
+    }
 }
 
 -(void)viewDidLayoutSubviews
@@ -148,10 +157,9 @@
 
 -(void)moveToViewControllerAtIndex:(NSUInteger)index animated:(BOOL)animated
 {
-    if (!self.isViewLoaded || !self.view.window){
-        self.currentIndex = index;
-    }
-    else{
+    if (!self.isViewLoaded && !self.view.window && _currentIndex == index){
+        self.preCurrentIndex = index;
+    } else {
         if (animated && self.skipIntermediateViewControllers && ABS(self.currentIndex - index) > 1){
             NSMutableArray * tempChildViewControllers = [NSMutableArray arrayWithArray:self.pagerTabStripChildViewControllers];
             UIViewController *currentChildVC = [self.pagerTabStripChildViewControllers objectAtIndex:self.currentIndex];
@@ -163,13 +171,11 @@
             [self.containerView setContentOffset:CGPointMake([self pageOffsetForChildIndex:fromIndex], 0) animated:NO];
             if (self.navigationController){
                 self.navigationController.view.userInteractionEnabled = NO;
-            }
-            else{
+            } else {
                 self.view.userInteractionEnabled = NO;
             }
             [self.containerView setContentOffset:CGPointMake([self pageOffsetForChildIndex:index], 0) animated:YES];
-        }
-        else{
+        } else {
             [self.containerView setContentOffset:CGPointMake([self pageOffsetForChildIndex:index], 0) animated:animated];
         }
         
@@ -199,6 +205,7 @@
             withProgressPercentage:(CGFloat)progressPercentage
              indexWasChanged:(BOOL)indexWasChanged
 {
+    NSLog(@"8=============FIRED==================3");
 }
 
 
@@ -347,6 +354,7 @@
     NSInteger virtualPage = [self virtualPageForContentOffset:self.containerView.contentOffset.x];
     NSUInteger newCurrentIndex = [self pageForVirtualPage:virtualPage];
     self.currentIndex = newCurrentIndex;
+    self.preCurrentIndex = self.currentIndex;
     BOOL changeCurrentIndex = newCurrentIndex != oldCurrentIndex;
     
     if (self.isProgressiveIndicator){
@@ -360,8 +368,7 @@
                     if (virtualPage > self.pagerTabStripChildViewControllersForScrolling.count - 1){
                         fromIndex = self.pagerTabStripChildViewControllersForScrolling.count - 1;
                         toIndex = self.pagerTabStripChildViewControllersForScrolling.count;
-                    }
-                    else{
+                    } else{
                         if (scrollPercentage >= 0.5f){
                             fromIndex = MAX(toIndex - 1, 0);
                         }
@@ -369,21 +376,19 @@
                             toIndex = fromIndex + 1;
                         }
                     }
-                }
-                else if (scrollDirection == XLPagerTabStripDirectionRight) {
+                } else if (scrollDirection == XLPagerTabStripDirectionRight) {
                     if (virtualPage < 0){
                         fromIndex = 0;
                         toIndex = -1;
-                    }
-                    else{
+                    } else {
                         if (scrollPercentage > 0.5f){
                             fromIndex = MIN(toIndex + 1, self.pagerTabStripChildViewControllersForScrolling.count - 1);
-                        }
-                        else{
+                        } else {
                             toIndex = fromIndex - 1;
                         }
                     }
                 }
+                NSLog(@"TO INDEX %ld FROM %ld", (long)toIndex, fromIndex);
                 [self.delegate pagerTabStripViewController:self updateIndicatorFromIndex:fromIndex toIndex:toIndex withProgressPercentage:(self.isElasticIndicatorLimit ? scrollPercentage : ( toIndex < 0 || toIndex >= self.pagerTabStripChildViewControllersForScrolling.count ? 0 : scrollPercentage )) indexWasChanged:changeCurrentIndex];
             }
         }
@@ -414,6 +419,7 @@
         if (self.currentIndex >= self.pagerTabStripChildViewControllers.count){
             self.currentIndex = self.pagerTabStripChildViewControllers.count - 1;
         }
+        _preCurrentIndex = _currentIndex;
         [self.containerView setContentOffset:CGPointMake([self pageOffsetForChildIndex:self.currentIndex], 0)  animated:NO];
         [self updateContent];
     }
@@ -425,6 +431,7 @@
 {
     if (self.containerView == scrollView){
         [self updateContent];
+        _lastContentOffset = scrollView.contentOffset.x;
     }
 }
 
@@ -433,13 +440,12 @@
 {
     if (self.containerView == scrollView){
         _lastPageNumber = [self pageForContentOffset:scrollView.contentOffset.x];
-        _lastContentOffset = scrollView.contentOffset.x;
     }
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
 {
-    if (self.containerView == scrollView && _pagerTabStripChildViewControllersForScrolling){
+    if (self.containerView == scrollView){
         _pagerTabStripChildViewControllersForScrolling = nil;
         
         [self updateContent];
@@ -463,6 +469,7 @@
     [coordinator animateAlongsideTransition:nil
                                  completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
                                      weakSelf.currentIndex = _pageBeforeRotate;
+                                     weakSelf.preCurrentIndex = weakSelf.currentIndex;
                                      [weakSelf updateIfNeeded];
     }];
 }

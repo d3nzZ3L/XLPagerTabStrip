@@ -271,6 +271,37 @@
     }
     return _cachedCellWidths;
 }
+- (NSArray<XLButtonBarViewCell*>*)cellForItems:(NSArray<NSIndexPath*>*)atIndexPaths
+                                     needReload:(BOOL)needReload {
+    NSMutableArray<XLButtonBarViewCell*>* cells = [NSMutableArray new];
+    for (NSIndexPath *index in atIndexPaths) {
+        UICollectionViewCell *cell = [_buttonBarView cellForItemAtIndexPath:index];
+        if (![cell isKindOfClass:[XLButtonBarViewCell class]]) {
+            break;
+        }
+        [cells addObject:(XLButtonBarViewCell*)cell];
+    }
+    if (needReload) {
+        NSMutableArray<NSIndexPath*>* preReloadIndexPaths = [NSMutableArray new];
+        NSMutableArray<NSIndexPath*>* reloadIndexPaths = [NSMutableArray new];
+        [cells enumerateObjectsUsingBlock:^(UICollectionViewCell * obj, NSUInteger idx, BOOL * stop) {
+            
+            if (obj == nil) {
+                [preReloadIndexPaths addObject:atIndexPaths[idx]];
+            }
+        }];
+        [reloadIndexPaths enumerateObjectsUsingBlock:^(NSIndexPath *obj, NSUInteger idx, BOOL *stop) {
+            if (obj.item >= 0 && obj.item < [self.buttonBarView numberOfItemsInSection:obj.section]) {
+                [reloadIndexPaths addObject:obj];
+            }
+        }];
+        if (!(reloadIndexPaths.count == 0)) {
+            NSLog(@"RELOADING WILL BEI");
+            [_buttonBarView reloadItemsAtIndexPaths:reloadIndexPaths];
+        }
+    }
+    return cells;
+}
 
 - (CGFloat)calculateStretchedCellWidths:(NSArray *)minimumCellWidths suggestedStetchedCellWidth:(CGFloat)suggestedStetchedCellWidth previousNumberOfLargeCells:(NSUInteger)previousNumberOfLargeCells
 {
@@ -340,9 +371,12 @@
                    withProgressPercentage:progressPercentage pagerScroll:XLPagerScrollYES];
         
         if (self.changeCurrentIndexProgressiveBlock) {
-            XLButtonBarViewCell *oldCell = (XLButtonBarViewCell*)[self.buttonBarView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex != fromIndex ? fromIndex : toIndex inSection:0]];
-            XLButtonBarViewCell *newCell = (XLButtonBarViewCell*)[self.buttonBarView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0]];
-            self.changeCurrentIndexProgressiveBlock(oldCell, newCell, progressPercentage, indexWasChanged, YES);
+            NSIndexPath *oldIndexPath = [NSIndexPath indexPathForRow:self.currentIndex != fromIndex ? fromIndex : toIndex inSection:0];
+            NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.currentIndex inSection:0];
+            
+            NSArray<XLButtonBarViewCell*>* cells = [self cellForItems:@[oldIndexPath,newIndexPath] needReload:YES];
+            
+            self.changeCurrentIndexProgressiveBlock([cells firstObject], [cells lastObject], progressPercentage, indexWasChanged, YES);
         }
     }
 }
@@ -366,25 +400,27 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     //There's nothing to do if we select the current selected tab
-	if (indexPath.item == self.currentIndex)
-		return;
+    if (indexPath.item == self.currentIndex) {
+        NSLog(@"INVALID INDEX PATH!!!!!!");
+        return;
+    }
 	
     [self.buttonBarView moveToIndex:indexPath.item animated:YES swipeDirection:XLPagerTabStripDirectionNone pagerScroll:XLPagerScrollYES];
     self.shouldUpdateButtonBarView = NO;
     
-    XLButtonBarViewCell *oldCell = (XLButtonBarViewCell*)[self.buttonBarView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0]];
-    XLButtonBarViewCell *newCell = (XLButtonBarViewCell*)[self.buttonBarView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:indexPath.item inSection:0]];
+    NSIndexPath *oldIndexPath = [NSIndexPath indexPathForItem:self.currentIndex inSection:0];
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForItem:indexPath.item inSection:0];
+    
+    NSArray<XLButtonBarViewCell*>* cells = [self cellForItems:@[oldIndexPath, newIndexPath] needReload:YES];
     if (self.isProgressiveIndicator) {
         if (self.changeCurrentIndexProgressiveBlock) {
-            self.changeCurrentIndexProgressiveBlock(oldCell, newCell, 1, YES, YES);
+            self.changeCurrentIndexProgressiveBlock([cells firstObject], [cells lastObject], 1, YES, YES);
         }
-    }
-    else{
+    } else {
         if (self.changeCurrentIndexBlock) {
-            self.changeCurrentIndexBlock(oldCell, newCell, YES);
+            self.changeCurrentIndexBlock([cells firstObject], [cells lastObject], YES);
         }
     }
-    
     [self moveToViewControllerAtIndex:indexPath.item];
 }
 
