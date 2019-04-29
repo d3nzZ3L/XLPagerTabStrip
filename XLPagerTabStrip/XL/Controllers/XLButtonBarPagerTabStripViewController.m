@@ -220,6 +220,8 @@
             label.text = [childController titleForPagerTabStripViewController:self];
             CGSize labelSize = [label intrinsicContentSize];
             
+            
+            
             CGFloat minimumCellWidth = labelSize.width + (self.buttonBarView.leftRightMargin * 2);
             NSNumber *minimumCellWidthValue = [NSNumber numberWithFloat:minimumCellWidth];
             [minimumCellWidths addObject:minimumCellWidthValue];
@@ -440,6 +442,8 @@
     UIViewController<XLPagerTabStripChildItem> * childController =   [self.pagerTabStripChildViewControllers objectAtIndex:indexPath.item];
     
     [buttonBarCell.label setText:[childController titleForPagerTabStripViewController:self]];
+    [buttonBarCell.priceLabel setText:[childController priceForPagerTabStripViewController:self]];
+    [buttonBarCell.etaLabel setText:[childController etaForPagerTabStripViewController:self]];
     
     if (self.buttonBarView.labelFont) {
         buttonBarCell.label.font = self.buttonBarView.labelFont;

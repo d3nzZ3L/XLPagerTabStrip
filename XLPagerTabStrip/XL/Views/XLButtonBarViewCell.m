@@ -29,7 +29,8 @@
 
 @property IBOutlet UIImageView * imageView;
 @property IBOutlet UILabel * label;
-
+@property IBOutlet UILabel * priceLabel;
+@property IBOutlet UILabel * etaLabel;
 @end
 
 @implementation XLButtonBarViewCell
@@ -43,6 +44,12 @@
         // been added to the view so we need to do it programmatically.
         [self.contentView addSubview:self.label];
     }
+    if (!self.priceLabel.superview) {
+        [self.contentView addSubview:self.priceLabel];
+    }
+    if (!self.etaLabel.superview) {
+        [self.contentView addSubview:self.etaLabel];
+    }
 }
 
 - (UILabel *)label
@@ -54,9 +61,26 @@
     // The label gets added to to the view in willMoveToSuperview:
     _label = [[UILabel alloc] initWithFrame:self.contentView.bounds];
     _label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _label.textAlignment = NSTextAlignmentCenter;
+    _label.textAlignment = NSTextAlignmentLeft;
     _label.font = [UIFont systemFontOfSize:14.0f weight:UIFontWeightMedium];
     return _label;
 }
 
+- (UILabel *)priceLabel {
+    if (_priceLabel) return _priceLabel;
+    _priceLabel = [[UILabel alloc] initWithFrame:self.contentView.bounds];
+    _priceLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _priceLabel.textAlignment = NSTextAlignmentCenter;
+    _priceLabel.font = [UIFont systemFontOfSize:16.0f weight:UIFontWeightMedium];
+    return _priceLabel;
+}
+- (UILabel *)etaLabel {
+    if (_etaLabel) return _etaLabel;
+    _etaLabel = [[UILabel alloc] initWithFrame:self.contentView.bounds];
+    _etaLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _etaLabel.textAlignment = NSTextAlignmentCenter;
+    _etaLabel.font = [UIFont systemFontOfSize:12.0f weight:UIFontWeightMedium];
+    return _etaLabel;
+
+}
 @end

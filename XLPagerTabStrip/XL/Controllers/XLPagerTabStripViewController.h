@@ -36,6 +36,8 @@
 @required
 
 - (NSString *)titleForPagerTabStripViewController:(XLPagerTabStripViewController *)pagerTabStripViewController;
+- (NSString *)priceForPagerTabStripViewController:(XLPagerTabStripViewController *)pagerTabStripViewController;
+- (NSString *)etaForPagerTabStripViewController:(XLPagerTabStripViewController *)pagerTabStripViewController;
 
 @optional
 
