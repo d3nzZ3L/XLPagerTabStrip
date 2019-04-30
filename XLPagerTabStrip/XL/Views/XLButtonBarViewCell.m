@@ -38,7 +38,6 @@
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
     [super willMoveToSuperview:newSuperview];
-    
     if (!self.label.superview){
         // If label wasn't configured in a XIB or storyboard then it won't have
         // been added to the view so we need to do it programmatically.
@@ -74,6 +73,7 @@
     _priceLabel.font = [UIFont systemFontOfSize:16.0f weight:UIFontWeightMedium];
     return _priceLabel;
 }
+
 - (UILabel *)etaLabel {
     if (_etaLabel) return _etaLabel;
     _etaLabel = [[UILabel alloc] initWithFrame:self.contentView.bounds];
@@ -81,6 +81,19 @@
     _etaLabel.textAlignment = NSTextAlignmentCenter;
     _etaLabel.font = [UIFont systemFontOfSize:12.0f weight:UIFontWeightMedium];
     return _etaLabel;
+}
 
+- (void)setBorders:(BOOL)isNeedSet {
+    if (isNeedSet) {
+        self.contentView.layer.borderWidth = 1.0;
+        self.contentView.layer.borderColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:0.25].CGColor;
+        self.priceLabel.textColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:1.0];
+        self.etaLabel.textColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:1.0];
+        self.contentView.layer.cornerRadius = 6.0;
+    } else {
+        self.priceLabel.textColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:1.0];
+        self.etaLabel.textColor = [UIColor colorWithRed:149.0/255.0 green:164.0/255.0 blue:291.0/255.0 alpha:1.0];
+        self.contentView.layer.borderWidth = 0.0;
+    }
 }
 @end

@@ -31,5 +31,5 @@
 @property (readonly, nonatomic) UILabel * label;
 @property (readonly, nonatomic) UILabel * priceLabel;
 @property (readonly, nonatomic) UILabel * etaLabel;
-
+- (void)setBorders:(BOOL)isNeedSet;
 @end

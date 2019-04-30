@@ -406,7 +406,6 @@
         NSLog(@"INVALID INDEX PATH!!!!!!");
         return;
     }
-	
     [self.buttonBarView moveToIndex:indexPath.item animated:YES swipeDirection:XLPagerTabStripDirectionNone pagerScroll:XLPagerScrollYES];
     self.shouldUpdateButtonBarView = NO;
     
@@ -414,6 +413,7 @@
     NSIndexPath *newIndexPath = [NSIndexPath indexPathForItem:indexPath.item inSection:0];
     
     NSArray<XLButtonBarViewCell*>* cells = [self cellForItems:@[oldIndexPath, newIndexPath] needReload:YES];
+
     if (self.isProgressiveIndicator) {
         if (self.changeCurrentIndexProgressiveBlock) {
             self.changeCurrentIndexProgressiveBlock([cells firstObject], [cells lastObject], 1, YES, YES);
