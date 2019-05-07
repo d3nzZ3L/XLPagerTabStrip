@@ -91,8 +91,8 @@
         self.etaLabel.textColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:1.0];
         self.contentView.layer.cornerRadius = 6.0;
     } else {
-        self.priceLabel.textColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:1.0];
-        self.etaLabel.textColor = [UIColor colorWithRed:149.0/255.0 green:164.0/255.0 blue:291.0/255.0 alpha:1.0];
+        self.priceLabel.textColor = [UIColor colorWithRed:149.0/255.0 green:164.0/255.0 blue:191.0/255.0 alpha:1.0];
+        self.etaLabel.textColor = [UIColor colorWithRed:149.0/255.0 green:164.0/255.0 blue:191.0/255.0 alpha:1.0];
         self.contentView.layer.borderWidth = 0.0;
     }
 }
