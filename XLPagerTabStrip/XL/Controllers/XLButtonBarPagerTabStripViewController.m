@@ -444,6 +444,11 @@
     [buttonBarCell.label setText:[childController titleForPagerTabStripViewController:self]];
     [buttonBarCell.priceLabel setText:[childController priceForPagerTabStripViewController:self]];
     [buttonBarCell.etaLabel setText:[childController etaForPagerTabStripViewController:self]];
+    if (![[childController priceForPagerTabStripViewController:self] isEqualToString:@""]) {
+        [buttonBarCell.loader stopAnimating];
+    } else {
+        [buttonBarCell.loader startAnimating];
+    }
     
     if (self.buttonBarView.labelFont) {
         buttonBarCell.label.font = self.buttonBarView.labelFont;

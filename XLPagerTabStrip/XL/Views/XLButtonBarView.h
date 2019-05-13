@@ -48,6 +48,7 @@ typedef NS_ENUM(NSUInteger, XLSelectedBarAlignment) {
 @property (nonatomic) BOOL shouldCellsFillAvailableWidth;
 @property UIFont * labelFont;
 @property NSUInteger leftRightMargin;
+@property (nonatomic, assign) BOOL showLoader;
 
 -(void)moveToIndex:(NSUInteger)index animated:(BOOL)animated swipeDirection:(XLPagerTabStripDirection)swipeDirection pagerScroll:(XLPagerScroll)pagerScroll;
 

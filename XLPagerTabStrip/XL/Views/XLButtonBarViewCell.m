@@ -31,6 +31,7 @@
 @property IBOutlet UILabel * label;
 @property IBOutlet UILabel * priceLabel;
 @property IBOutlet UILabel * etaLabel;
+@property IBOutlet UIActivityIndicatorView * loader;
 @end
 
 @implementation XLButtonBarViewCell
@@ -96,4 +97,17 @@
         self.contentView.layer.borderWidth = 0.0;
     }
 }
+- (UIActivityIndicatorView*)loader {
+    if (_loader) return _loader;
+    _loader = [[UIActivityIndicatorView alloc] initWithFrame:self.contentView.bounds];
+    [_loader setHidesWhenStopped:YES];
+    [self.contentView addSubview:self.loader];
+    NSArray<NSLayoutConstraint*>* constraints = @[[self.loader.widthAnchor  constraintEqualToConstant:20],
+                                                 [self.loader.heightAnchor constraintEqualToConstant:20],
+                                                 [self.loader.centerXAnchor constraintEqualToAnchor:self.contentView.centerXAnchor],
+                                                  [self.loader.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor]];
+    [NSLayoutConstraint activateConstraints:constraints];
+    return _loader;
+}
+
 @end
