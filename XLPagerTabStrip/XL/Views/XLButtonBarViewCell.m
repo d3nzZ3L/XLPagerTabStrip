@@ -110,4 +110,7 @@
     return _loader;
 }
 
+- (void)titleLabelPosition:(BOOL)isCenter {
+    self.cellTitleTopConstraint.constant = isCenter ?  10 : 0;
+}
 @end
