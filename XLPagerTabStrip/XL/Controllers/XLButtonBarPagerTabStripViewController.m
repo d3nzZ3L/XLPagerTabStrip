@@ -445,9 +445,12 @@
     if (![[childController priceForPagerTabStripViewController:self] isEqualToString:@"-1000"]) {
         [buttonBarCell.priceLabel setText:[childController priceForPagerTabStripViewController:self]];
         [buttonBarCell.etaLabel setText:[childController etaForPagerTabStripViewController:self]];
+    } else {
+        [buttonBarCell.priceLabel setText:@""];
+        [buttonBarCell.etaLabel setText:@""];
     }
     [buttonBarCell titleLabelPosition:!self.buttonBarView.showLoader];
-    if (![[childController priceForPagerTabStripViewController:self] isEqualToString:@""] || !self.buttonBarView.showLoader) {
+    if ((![[childController priceForPagerTabStripViewController:self] isEqualToString:@""] || [[childController priceForPagerTabStripViewController:self] isEqualToString:@"-1000"]) || !self.buttonBarView.showLoader) {
         [buttonBarCell.loader stopAnimating];
     } else {
         [buttonBarCell.loader startAnimating];
