@@ -442,8 +442,10 @@
     UIViewController<XLPagerTabStripChildItem> * childController =   [self.pagerTabStripChildViewControllers objectAtIndex:indexPath.item];
     
     [buttonBarCell.label setText:[childController titleForPagerTabStripViewController:self]];
-    [buttonBarCell.priceLabel setText:[childController priceForPagerTabStripViewController:self]];
-    [buttonBarCell.etaLabel setText:[childController etaForPagerTabStripViewController:self]];
+    if (![[childController priceForPagerTabStripViewController:self] isEqualToString:@"-1000"]) {
+        [buttonBarCell.priceLabel setText:[childController priceForPagerTabStripViewController:self]];
+        [buttonBarCell.etaLabel setText:[childController etaForPagerTabStripViewController:self]];
+    }
     [buttonBarCell titleLabelPosition:!self.buttonBarView.showLoader];
     if (![[childController priceForPagerTabStripViewController:self] isEqualToString:@""] || !self.buttonBarView.showLoader) {
         [buttonBarCell.loader stopAnimating];
