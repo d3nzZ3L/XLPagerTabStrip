@@ -31,6 +31,7 @@
 @property IBOutlet UILabel * label;
 @property IBOutlet UILabel * priceLabel;
 @property IBOutlet UILabel * etaLabel;
+@property IBOutlet UIView * borderView;
 @property IBOutlet UIActivityIndicatorView * loader;
 @end
 
@@ -83,18 +84,25 @@
     _etaLabel.font = [UIFont systemFontOfSize:12.0f weight:UIFontWeightMedium];
     return _etaLabel;
 }
-
+    
+- (UIView *)borderView {
+    if (_borderView) return _borderView;
+    _borderView = [[UIView alloc] initWithFrame:self.contentView.bounds];
+    _borderView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    return _borderView;
+}
+    
 - (void)setBorders:(BOOL)isNeedSet {
     if (isNeedSet) {
-        self.contentView.layer.borderWidth = 1.0;
-        self.contentView.layer.borderColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:0.25].CGColor;
+        self.borderView.layer.borderWidth = 1.0;
+        self.borderView.layer.borderColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:0.25].CGColor;
         self.priceLabel.textColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:1.0];
         self.etaLabel.textColor = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:233.0/255.0 alpha:1.0];
-        self.contentView.layer.cornerRadius = 6.0;
+        self.borderView.layer.cornerRadius = 6.0;
     } else {
         self.priceLabel.textColor = [UIColor colorWithRed:149.0/255.0 green:164.0/255.0 blue:191.0/255.0 alpha:1.0];
         self.etaLabel.textColor = [UIColor colorWithRed:149.0/255.0 green:164.0/255.0 blue:191.0/255.0 alpha:1.0];
-        self.contentView.layer.borderWidth = 0.0;
+        self.borderView.layer.borderWidth = 0.0;
     }
 }
 - (UIActivityIndicatorView*)loader {

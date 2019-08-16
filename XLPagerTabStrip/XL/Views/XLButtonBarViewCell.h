@@ -32,6 +32,7 @@
 @property (readonly, nonatomic) UILabel * priceLabel;
 @property (readonly, nonatomic) UILabel * etaLabel;
 @property (readonly, nonatomic) UIActivityIndicatorView *loader;
+@property (readonly, nonatomic) UIView * borderView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *cellTitleTopConstraint;
 
 - (void)setBorders:(BOOL)isNeedSet;
