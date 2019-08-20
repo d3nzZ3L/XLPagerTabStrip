@@ -217,7 +217,11 @@
             UILabel *label = [[UILabel alloc] init];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             label.font = self.buttonBarView.labelFont;
-            label.text = [childController titleForPagerTabStripViewController:self];
+            if ([childController titleForPagerTabStripViewController:self].length - 2 > [childController priceForPagerTabStripViewController:self].length) {
+                label.text = [childController titleForPagerTabStripViewController:self];
+            } else {
+                label.text = [childController priceForPagerTabStripViewController:self];
+            }
             CGSize labelSize = [label intrinsicContentSize];
             
             
