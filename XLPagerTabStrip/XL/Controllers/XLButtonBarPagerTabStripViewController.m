@@ -500,6 +500,7 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [super scrollViewDidScroll:scrollView];
     if (self.scrollViewDidScroll) {
         self.scrollViewDidScroll();
     }
