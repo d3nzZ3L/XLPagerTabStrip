@@ -121,4 +121,8 @@
 - (void)titleLabelPosition:(BOOL)isCenter {
     self.cellTitleTopConstraint.constant = isCenter ?  10 : 0;
 }
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    [self setBorders:NO];
+}
 @end
